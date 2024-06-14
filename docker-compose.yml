@@ -1,0 +1,29 @@
+version: '3.12.1'
+
+services:
+  web:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - ganache
+      - mongodb
+
+  ganache:
+    image: trufflesuite/ganache-cli
+    ports:
+      - "8545:8545"
+
+  mongodb:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+
+  truffle:
+    build: ./truffle
+    volumes:
+      - ./truffle:/usr/src/app
+    working_dir: /usr/src/app
+    command: truffle migrate --network development
+    depends_on:
+      - ganache    
