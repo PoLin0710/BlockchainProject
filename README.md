@@ -122,7 +122,7 @@ curl -X POST http://localhost:5000/auth/kycConfirm \
 }
 ```
 
-##  用戶狀態(測試是否已經登入過) - TEST
+##  用戶資訊
 Endpoint: /auth/status
 
 Method: GET
@@ -133,13 +133,15 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 ### Request:
 ```
-curl -X GET http://localhost:5000/auth/status \
-     -H "Authorization: Bearer <JWT_TOKEN>"
+curl -X GET http://127.0.0.1:5000/auth/status \
+     -H "Authorization: Bearer <YOUR_JWT_TOKEN>"
 ```
 ### Response:
 ```
 {
-  "message": "User <username> is logged in"
+    "credit_points": <points>,
+    "nickname": "<nickname>",
+    "username": "<username>"
 }
 ```
 ##  查詢餘額

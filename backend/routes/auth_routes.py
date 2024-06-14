@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from utils.db import mongo, bcrypt
-from utils.blockchain import create_blockchain_account
+from utils.blockchain import create_blockchain_account ,ContractFunctions
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -61,4 +61,22 @@ def kycConfirm():
 @jwt_required()
 def status():
     current_user = get_jwt_identity()
-    return jsonify({"message": f"User {current_user} is logged in"}), 200
+    user = mongo.db.users.find_one({"username": current_user})
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    nickname = user.get("nickname")
+    username = user.get("username")
+    address = user.get("address")
+    
+    if not address:
+        return jsonify({"error": "User address not found"}), 404
+
+    # 獲取用戶的信譽積分
+    points = ContractFunctions().get_credit_points(address)
+
+    return jsonify({
+        "nickname": nickname,
+        "username": username,
+        "credit_points": points
+    }), 200
