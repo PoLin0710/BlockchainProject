@@ -14,3 +14,43 @@ class Config:
     ACCOUNT_ADDRESS = os.getenv("ACCOUNT_ADDRESS","0xC3de48388ffD3b9c30DeC08c3B2dE72D67466fD0")
     # 改部屬合約地址
     CONTRACT_INFO_ADDRESS=os.getenv("CONTRACT_INFO_ADDRESS","0x9d7fFC677AbB7f88276e83C04Fb91e9573CEcD64")
+    CONTRACT_INFO_ABI=[
+	{
+		"inputs": [],
+		"name": "getInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "bool",
+						"name": "kyc_Confirm",
+						"type": "bool"
+					},
+					{
+						"internalType": "string[]",
+						"name": "links",
+						"type": "string[]"
+					}
+				],
+				"internalType": "struct UserInfo.UserData",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getLinks",
+		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "links",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

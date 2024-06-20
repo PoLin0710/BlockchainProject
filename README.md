@@ -40,14 +40,12 @@ project
 ```
 SECRET_KEY=<你的秘密金鑰>
 JWT_SECRET_KEY=<你的JWT秘密金鑰>
-PLATFORM_PRIVATE_KEY=<你的平台私鑰>
-ACCOUNT_ADDRESS=<ganache中的第一個地址>
 CONTRACT_INFO_ADDRESS=<部屬合約地址>
 ```
 #   Docker
 啟動專案
 docker compose up --build
-第一次建造時會比較久，建造完成可以看到ganache 把第一個地址跟私鑰放進env
+第一次建造時會比較久，建造完成可以看到truffle 內會產生部屬合約地址將牠放入對應的環境變數
 
 之後若只有跟改後端項目 .py檔案
 docker compose up --build web
@@ -68,15 +66,13 @@ curl -X POST http://localhost:5000/auth/register \
      -H "Content-Type: application/json" \
      -d '{
            "nickname": "<nickname>",
-           "username": "<testuser>",
-           "password": "<testpassword>"
+           "address": "<address>",
          }'
 ```
 ### Response:
 ```
 {
   "message": "User registered successfully",
-  "address": "<blockchain_address>"
 }
 ```
 ##  登錄
@@ -89,36 +85,13 @@ Method: POST
 curl -X POST http://localhost:5000/auth/login \
      -H "Content-Type: application/json" \
      -d '{
-           "username": "testuser",
-           "password": "testpassword"
+           "address": "<address>"
          }'
 ```
 ### Response:
 ```
 {
-  "message": "Login successful",
-  "access_token": "<JWT_TOKEN>",
-  "address": "<blockchain_address>"
-}
-```
-##  KYC 認證
-Endpoint: /auth/kycConfirm
-
-Method: POST
-
-### Headers:
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-### Request:
-```
-curl -X POST http://localhost:5000/auth/kycConfirm \
-     -H "Authorization: Bearer <JWT_TOKEN>"
-```
-### Response:
-```
-{
-  "message": "KYC Confirmed"
+  "message": "Login successful"
 }
 ```
 
@@ -127,124 +100,64 @@ Endpoint: /auth/status
 
 Method: GET
 
-### Headers:
-```
-Authorization: Bearer <JWT_TOKEN>
-```
 ### Request:
 ```
-curl -X GET http://127.0.0.1:5000/auth/status \
-     -H "Authorization: Bearer <YOUR_JWT_TOKEN>"
+curl -X GET "http://localhost:5000/auth/status?address=<0xYourUserAddress>"
+
 ```
 ### Response:
 ```
 {
-    "credit_points": <points>,
-    "nickname": "<nickname>",
-    "username": "<username>"
+    "User": {
+        "_id": "667399b421d3a99b4ec16593",
+        "address": "0x0Bef52E7a0d28C053374624815A0eA87099e56F4",
+        "history": [],
+        "nickname": "Alice",
+        "tags": []
+    }
 }
 ```
-##  查詢餘額
-Endpoint: /blockchain/balance
+
+## 獲取鏈上用戶資訊
+Endpoint: /blockchain/getInfo
 
 Method: GET
 
-### Request:
+### Request
 ```
-curl -X GET http://localhost:5000/blockchain/balance \
-     -H "Authorization: Bearer <JWT_TOKEN>"
+curl -X GET "http://localhost:5000/blockchain/getInfo?address=<address>"
 ```
-### Response:
+### Response
 ```
 {
-  "address": "<blockchain_address>",
-  "balance": "<balance_in_eth>"
+  "kyc_Confirm": false,
+  "links": [
+    "https://example.com",
+    "https://example.org"
+  ]
 }
 ```
-##  驗證鏈接
-Endpoint: /blockchain/check_connection
+
+##  獲取用戶鏈接
+Endpoint: /blockchain/getLinks
 
 Method: GET
+### Request
+```
+curl -X GET "http://localhost:5000/blockchain/getLinks?address=<address>"
+```
 
-### Request:
-```
-curl -X GET http://localhost:5000/blockchain/check_connection
-```
-### Response:
+### Respond
 ```
 {
-  "status": "connected",
-  "blockNumber": <block_number>,
-  "blockHash": "<block_hash>",
-  "NetID": <network_id>
+  "links": [
+    "https://example.com",
+    "https://example.org"
+  ]
 }
 ```
-##  投票
-Endpoint: /blockchain/vote
 
-Method: POST
 
-### Headers:
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-### Request:
-```
-curl -X POST http://localhost:5000/blockchain/vote \
-     -H "Authorization: Bearer <JWT_TOKEN>" \
-     -H "Content-Type: application/json" \
-     -d '{
-           "to": "recipient_username",
-           "like": true
-         }'
-
-```
-### Response:
-```
-{
-  "tx_hash": "<transaction_hash>"
-}
-```
-##  查詢信用點數
-Endpoint: /blockchain/credit_points
-
-Method: GET
-
-### Headers:
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-### Request:
-```
-curl -X GET http://localhost:5000/blockchain/credit_points \
-     -H "Authorization: Bearer <JWT_TOKEN>"
-```
-### Response:
-```
-{
-  "credit_points": <points>
-}
-```
-##  創建用戶資訊 -TEST
-Endpoint: /blockchain/create_info
-
-Method: POST
-
-### Headers:
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-### Request:
-```
-curl -X POST http://localhost:5000/blockchain/create_info \
-     -H "Authorization: Bearer <JWT_TOKEN>"
-```
-### Response:
-```
-{
-  "tx_hash": "<transaction_hash>"
-}
-```
 部屬合約
 Truffle 設定
 在 truffle 資料夾中包含 Dockerfile 和 truffle-config.js，以及 contracts 資料夾，用於存放智能合約。
