@@ -65,14 +65,25 @@ Method: POST
 curl -X POST http://localhost:5000/auth/register \
      -H "Content-Type: application/json" \
      -d '{
-           "nickname": "<nickname>",
-           "address": "<address>",
+           "nickname": "<testuser>",
+           "address": "<0xAddress123456>",
+           "tags": ["tag1", "tag2", "tag3"]
          }'
 ```
 ### Response:
 ```
 {
-  "message": "User registered successfully",
+      "data": {
+        "address": "0x0Bef52E7a0d28C053374624815A0eA87099e56F4",
+        "history": [],
+        "nickname": "testuser",
+        "tags": [
+            "tag1",
+            "tag2",
+            "tag3"
+        ]
+    },
+  "message": "User registered successfully"
 }
 ```
 ##  登錄

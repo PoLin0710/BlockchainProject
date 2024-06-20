@@ -8,6 +8,7 @@ def register():
     data = request.get_json()
     nickname = data['nickname']
     address = data['address']
+    tags = data['tags']
 
     if mongo.db.users.find_one({"address": address}):
         return jsonify({"error": "This address already exists"}), 400
@@ -15,7 +16,7 @@ def register():
     user_data = {
         "nickname": nickname,
         "address": address,
-        "tags": [],
+        "tags": tags,
         "history": [],
     }
     
