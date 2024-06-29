@@ -3,13 +3,20 @@
   "version": "1.0.0",
   "main": "truffle-config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild frontend/app.js --bundle --outfile=dist/bundle.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "buffer": "^6.0.3",
+    "ethers": "^6.13.1",
+    "express": "^4.19.2",
     "truffle": "^5.11.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.5"
   }
 }
